@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<style>
+  button[type=submit] {
+    /* width: 100%; */
+    /* 0, 206, 130 */
+    background-color: #00CE82;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>
+<div style="text-align:center">
+<form method="post">
+<div class="container">
+  <h1>Weather Powered Email</h1>
+  <p>Welcome! Subscribe here!</p>
+
+  <p>
+  <label for="email"><b>Email</b></label>
+  <input type="text" placeholder="Enter Email" name="email" required>
+  </p>
+
+  <p>
+  <label for="psw"><b>Location</b></label>
+  <input type="text" placeholder="Where do you stay" name="psw" required>
+  </p>
+
+  <button type="submit" class="registerbtn">Subscribe</button>
+</div>
+</form>
+</div>
+
+{% endblock %}
