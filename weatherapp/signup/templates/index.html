@@ -4,16 +4,19 @@
 {% load static %}
 <style>
   button[type=submit] {
-    /* width: 100%; */
-    /* 0, 206, 130 */
     background-color: #00CE82;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
   }
+  html *
+  {
+     font-family: Inter,Helvetica,Arial,sans-serif !important;
+   }
+
 </style>
 <div style="text-align:center">
 <form method="post">
@@ -27,8 +30,14 @@
   </p>
 
   <p>
-  <label for="psw"><b>Location</b></label>
-  <input type="text" placeholder="Where do you stay" name="psw" required>
+    <label for="loc"><b>Location</b></label>
+    <select name="item_id">
+      {% for entry in locations %}
+        <option value="{{ entry.city }}">{{ entry.city }}, {{ entry.state}}</option>
+      {% endfor %}
+    </select>
+  <!-- <label for="psw"><b>Location</b></label>
+  <input type="text" placeholder="Where do you stay" name="psw" required> -->
   </p>
 
   <button type="submit" class="registerbtn">Subscribe</button>
