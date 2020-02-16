@@ -3,6 +3,9 @@ Weather App (Klaviyo)
 
 ## Requirements
 - Python >= 3.6
+- requests
+- beautifulsoup >= 4
+- lxml
 
 ## Credentials
 ```
@@ -13,3 +16,7 @@ PW: kvweatherapp
 
 ## Steps to Run
 - conda activate kv (Personal)
+
+
+## Sources
+- Abbreviations of states http://worldpopulationreview.com/states/state-abbreviations/
