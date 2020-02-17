@@ -5,6 +5,7 @@ Weather App (Klaviyo)
 - Python >= 3.6
 - requests
 - beautifulsoup >= 4
+- django-autocomplete-light >= 3
 - lxml
 
 ## Credentials
