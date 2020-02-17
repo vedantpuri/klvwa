@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'signup',
-    'autocomplete_light',
 ]
 
 MIDDLEWARE = [

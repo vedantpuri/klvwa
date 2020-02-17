@@ -3,46 +3,49 @@
 {% block content %}
 {% load static %}
 <style>
-  button[type=submit] {
+  input[type=submit] {
     background-color: #00CE82;
     color: white;
     padding: 14px 20px;
-    margin: 8px 0;
+    margin: 20px 0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
-  html *
+  body
   {
-     font-family: Inter,Helvetica,Arial,sans-serif !important;
+     font-family: Courier New !important;
+     background-color: #00CE82;
    }
-
+   #form_div{
+     text-align:center;
+     padding:20px;
+     margin: 100px 200px 500px 400px;
+     border: 5px solid #00CE82;
+     width: 400px;
+     height: 300px;
+     border-radius: 25px;
+     background-color: #FFFFFF;
+   }
+   form {
+  	width: 300px;
+  	margin: 0 auto;
+    display: block;
+    background-color: #FFFFFF;
+  }
+  p{
+    background-color: #FFFFFF;
+  }
+  h1{
+    text-align:justify;
+  }
 </style>
-<div style="text-align:center">
-<form method="post">
-<div class="container">
-  <h1>Weather Powered Email</h1>
-  <p>Welcome! Subscribe here!</p>
-
-  <p>
-  <label for="email"><b>Email</b></label>
-  <input type="text" placeholder="Enter Email" name="email" required>
-  </p>
-
-  <p>
-    <label for="loc"><b>Location</b></label>
-    <select name="item_id">
-      {% for entry in locations %}
-        <option value="{{ entry.city }}">{{ entry.city }}, {{ entry.state}}</option>
-      {% endfor %}
-    </select>
-  <!-- <label for="psw"><b>Location</b></label>
-  <input type="text" placeholder="Where do you stay" name="psw" required> -->
-  </p>
-
-  <button type="submit" class="registerbtn">Subscribe</button>
-</div>
+<h1>Weather Powered Email</h1>
+<div id="form_div">
+<form action="" method="post">
+  {% csrf_token %}
+    {{ form.as_p }}
+  <input type="submit" value="Submit">
 </form>
 </div>
-
 {% endblock %}
