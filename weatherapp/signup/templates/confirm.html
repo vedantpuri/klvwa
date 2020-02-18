@@ -42,15 +42,6 @@
 </style>
 <h1>Weather Powered Email</h1>
 <div id="form_div">
-<form action="" method="post">
-  {% csrf_token %}
-    {{ form.as_p }}
-  <input type="submit" value="Submit">
-  {% if error %}
-              <div class="alert alert-danger">
-                  <strong>{{ error|escape }}</strong>
-              </div>
-  {% endif %}
-</form>
+<p> Thank-you! You have succesfully subscribed!</p>
 </div>
 {% endblock %}
