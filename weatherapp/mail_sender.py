@@ -2,6 +2,7 @@
 import os
 import django
 import logging
+import requests
 import smtplib
 from email.message import EmailMessage
 from utilities.weather_request import WeatherReporter
@@ -107,6 +108,12 @@ if __name__ == "__main__":
         0: "Enjoy a discount on us.",
         1: "It's nice out! Enjoy a discount on us.",
     }
+
+    try:
+        response = requests.get("http://www.google.com")
+    except requests.ConnectionError:
+        logging.error(f"No network connection. Try again later.")
+        exit()
 
     logging.info("Fetching weather data for locations ...")
     loc_emails = form_emails(weather_to_email, wr, locs, query_type, query_args)

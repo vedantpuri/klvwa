@@ -88,6 +88,11 @@ def dump_data(out_file, locations, codes):
 
 
 if __name__ == "__main__":
+    try:
+        response = requests.get("http://www.google.com")
+    except requests.ConnectionError:
+        logging.error(f"No network connection. Try again later.")
+        exit()
     html_text = get_html_data(URL)
     locations = clean_data(html_text)
     codes = create_abbrev_mapping(ABBREVIATION_FILE)
