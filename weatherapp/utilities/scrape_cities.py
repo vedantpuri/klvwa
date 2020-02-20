@@ -18,6 +18,12 @@ URL = "https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population#
 
 # ----- SCRAPING
 def get_html_data(url):
+    """
+    Obtains the text of the wikipedia page of populated cities
+    :param url: URL to be queried (GET)
+
+    :return: Text(HTML) obtained from GET request to the `url`
+    """
     try:
         res = requests.get(url)
         # If the response was successful, no Exception will be raised
@@ -35,6 +41,12 @@ def get_html_data(url):
 
 # ----- CLEANING
 def clean_data(data):
+    """
+    Extracts the relevant table from the data given in
+    :param data:    Text(HTML) obtained by querying the webpage
+
+    :return: A list of tuples of the type (city, state)
+    """
     soup = BeautifulSoup(data, "lxml")
     locations = []
     logging.info("Extracting city list ...")
@@ -53,18 +65,30 @@ def clean_data(data):
 
 # ----- ABBREVATION
 def create_abbrev_mapping(abrev_file):
+    """
+    Forms a mapping from whole state name to abbreviated state name
+    :param abrev_file:    A file containings abbreviations of US states
+
+    :return: A mapping from whole state name to abbreviated state name
+    """
     codes = {}
     logging.info("Forming Abbreviation mapping ...")
     with open(abrev_file, newline="") as csvfile:
         spamreader = csv.reader(csvfile, delimiter=",", quotechar="|")
         for row in spamreader:
             codes[row[0][1:-1]] = row[2][1:-1]
-    logging.info("Abbreviation mappingcomplete.")
+    logging.info("Abbreviation mapping complete.")
     return codes
 
 
 # ----- DUMPING
 def dump_data(out_file, locations, codes):
+    """
+    Dumps the location data into a json formate to `out_file`
+    :param out_file:    Path where to dump top 100 populated locations
+    :param locations:   A list of tuples of the type (city, state)
+    :param codes:       A mapping used to abbreviate state names
+    """
     locations = locations[:100]
     model_name = "signup.location"
     pk = 0

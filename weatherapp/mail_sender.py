@@ -15,6 +15,11 @@ from signup.models import Subscriber
 
 # ----- UTIL FUNCS
 def get_users_locations():
+     """
+     Restructure django Subscriber objects into a hashmap
+
+    :return: A hashmap (location -> list of emails of that location)
+    """
     subscribers = Subscriber.objects.all()
     locations = {}
     for subscriber in subscribers:
@@ -28,6 +33,15 @@ def get_users_locations():
 
 
 def dissassemble_weather(weather):
+    """
+    Decode weather json based on given constraints
+    1: Nice out
+    0: Default
+    -1: Not so nice out
+    :param weather:    weather dict from the weather API
+
+    :return: A triplet: class of weather (1/0/-1), temp, description
+    """
     today_weather, tomorrow_weather = weather["data"][0], weather["data"][1]
     ret_code, temp, desc = (
         0,
@@ -52,6 +66,16 @@ def dissassemble_weather(weather):
 def form_emails(
     weather_to_email, weather_reporter_obj, locations, query_type, query_args
 ):
+    """
+    Forms a mapping from the location to relevant info needed for email contents
+    :param weather_to_email:        A mapping from weather classification to email subject
+    :param weather_reporter_obj:    WeatherReporter object
+    :param locations:               A hashmap (location -> list of emails of that location)
+    :param query_type:              What kind of forecast to GET from the API
+    :param query_args:              Args of that query_type
+
+    :return: A hashmap (location -> email subj, location temp, location weather desc
+    """
     loc_to_email = {}
     for location in locations:
         loc_weather = weather_reporter_obj.get_weather(location, query_type, query_args)
@@ -61,6 +85,15 @@ def form_emails(
 
 
 def generate_email_content(msg, subj, temp, desc):
+    """
+    Formats and segregates email content in `msg` for the given args
+    :param msg:     Email message object that will be used to send emails
+    :param subj:    Subject of the email
+    :param temp:    Temperature value of the current location
+    :param desc:    Description of weather o the location
+
+    :return: A hashmap (location -> email subj, location temp, location weather desc
+    """
     msg["Subject"] = "Discount on us"
     msg["From"] = EMAIL_ID
     msg["To"] = "vedantpuri@umass.edu"
@@ -68,6 +101,11 @@ def generate_email_content(msg, subj, temp, desc):
 
 
 def send_mails(loc_em, locations):
+    """
+    Sends out emails for `locations`
+    :param loc_em:        A mapping from (location -> subject, temp, desc)
+    :param locations:     A hashmap (location -> list of emails of that location)
+    """
     from_email = os.environ.get("EMAIL_ID")
     from_email_pass = os.environ.get("EMAIL_PASS")
     # context manager ensures connection is closed automatically
