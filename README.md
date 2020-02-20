@@ -1,10 +1,19 @@
 # Weather App (Klaviyo)
+Welcome to my implementation of the weather powered email assignment by Klaviyo.
 
 ## Requirements
-- Python >= 3.6
-- requests
-- beautifulsoup >= 4
-- lxml
+The following libraries have been used and can be installed using ```pip install -r requirements.txt```
+- Django == 3.0.3
+- Python == 3.6
+- requests == 2.22.0
+- beautifulsoup4 == 4.8.2
+- lxml == 4.5.0
+
+Please ensure that your PythonPath etc are configured properly. I would advise using a virtual environment to run this program.
+
+Apart from the above, I used certain environment variables to ensure sensetive data never gets exposed as a measure of security. Please set the following:
+- Subscribe to weatherbit.io and upon obtaining the key, set the environment variable with the name: ```WEATHERBIT_KEY```
+- For the purposes of this assignment, I used my email to send out emails and hence used environment variables for the credentials and hence, you would need to set these for proper functioning: ```EMAIL_ID``` as your email-id and ```EMAIL_PASS``` for the password.
 
 ## Admin Credentials
 If you would like to inspect deeper under the hood, I have provided with the admin credentials of the website
@@ -15,12 +24,31 @@ PW: kvweatherapp
 ```
 
 ## Steps to Run
-- pip install requirements
-- Create and Load fixture
-- Store necessary env variables (SCRIPT TO DO THAT)
-- migrations
-- runserver
-- Run mailer
+- Satisfy Requirements
+- Create Fixture by scraping top populated cities. To do this navigate to ```weatherapp/utilities``` and run:
+```
+python scrape_cities.py
+```
+- Navigate one directory up and now load this fixture into django by running:
+```
+python manage.py loaddata locations.json
+```
+- Migrate these changes:
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+- Run the server:
+```
+python manage.py runserver
+```
+- Use the app and make subscriptions. Once done quit the server.
+- To send the emails of all subscribers as of now run:
+```
+python mail_sender.py
+```
+
+**NOTE:** It is unnecessary to scrape cities, load fixtures and make migrations everytime. I provided these instructions with the mindset of the project being run for the very first time after the code was written. Even in my submission, the sqlite files should be present which should resume from the state I left them in last.
 
 ## Assumptions
 During this project I made some small assumptions, which I thought I would mention. Due to heavy semester load it was hard for me to implement/check some of these.
