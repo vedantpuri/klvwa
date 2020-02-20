@@ -6,7 +6,8 @@
 - beautifulsoup >= 4
 - lxml
 
-## Credentials
+## Admin Credentials
+If you would like to inspect deeper under the hood, I have provided with the admin credentials of the website
 ```
 Username: kvadmin
 Email: vedantpuri13@gmail.com
@@ -22,15 +23,16 @@ PW: kvweatherapp
 - Run mailer
 
 ## Assumptions
-- email validity
-- api is correct
-- api always returns given a correctly formatted location (had to assume because cant form body of email other wise)
+During this project I made some small assumptions, which I thought I would mention. Due to heavy semester load it was hard for me to implement/check some of these.
+- Email Existence: For the purposes of this assignment I assumed that the emails being enter will exist. Ofcourse, while filling the form, there is a Django regex check to validate format, but currently there is no check for whether the email is actually a real one or not.
+- weatherbit.io returns weather correctly
+- The requests to weatherbit.io never fail. Ideally, there should be a check for this but due to the free subscription there is a cap on the number of calls I can make (so I cannot poll till I succeed) and the assignment asks us to set the content of the body of the email with the weather and description of the location, which is a hard field to have a default value and wouldn't suit the app.
+wise)
 
 
 ## Scalability
 - Caching weather API calls (O(100))
-- Checks email validity before sending (no unneseccary queries)
-
+- No recomputation of what kind to email to send, going by locations and storing the email
 
 ## Security
 - SMTP SSL reason

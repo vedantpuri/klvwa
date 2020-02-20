@@ -27,8 +27,12 @@ def get_users_locations():
 
 
 def dissassemble_weather(weather):
-    today_weather, tomorrow_weather = weather['data'][0], weather['data'][1]
-    ret_code, temp, desc = 0, today_weather['temp'], today_weather["weather"]["description"]
+    today_weather, tomorrow_weather = weather["data"][0], weather["data"][1]
+    ret_code, temp, desc = (
+        0,
+        today_weather["temp"],
+        today_weather["weather"]["description"],
+    )
     if (today_weather["weather"]["code"] == 800) or (
         int(today_weather["temp"]) - int(tomorrow_weather["temp"]) >= 5
     ):
@@ -49,39 +53,42 @@ def form_emails(
 ):
     loc_to_email = {}
     for location in locations:
-        loc_weather = weather_reporter_obj.get_weather(
-            location, query_type, query_args
-        )
+        loc_weather = weather_reporter_obj.get_weather(location, query_type, query_args)
         coded_weather, temp, desc = dissassemble_weather(loc_weather)
         loc_to_email[location] = weather_to_email[coded_weather], temp, desc
     return loc_to_email
 
+
 def generate_email_content(msg, subj, temp, desc):
-    msg['Subject'] = 'Discount on us'
-    msg['From'] = EMAIL_ID
-    msg['To'] = 'vedantpuri@umass.edu'
-    msg.set_content('How about a discount on us')
+    msg["Subject"] = "Discount on us"
+    msg["From"] = EMAIL_ID
+    msg["To"] = "vedantpuri@umass.edu"
+    msg.set_content("How about a discount on us")
+
 
 def send_mails(loc_em, locations):
-    from_email = os.environ.get('EMAIL_ID')
-    from_email_pass = os.environ.get('EMAIL_PASS')
+    from_email = os.environ.get("EMAIL_ID")
+    from_email_pass = os.environ.get("EMAIL_PASS")
     # context manager ensures connection is closed automatically
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as conn:
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as conn:
         conn.login(from_email, from_email_pass)
         for location in locations:
             subject, temp, desc = loc_em[location]
             for to_email in locations[location]:
                 msg = EmailMessage()
-                msg['Subject'] = subject
-                msg['From'] = from_email
-                msg['To'] = to_email
-                msg.set_content(f"{location[0]}, {location[1]}: {temp} degrees celsius, {desc}")
+                msg["Subject"] = subject
+                msg["From"] = from_email
+                msg["To"] = to_email
+                msg.set_content(
+                    f"{location[0]}, {location[1]}: {temp} degrees celsius, {desc}"
+                )
                 conn.send_message(msg)
+
 
 # ----- SCRIPT EXECUTION
 if __name__ == "__main__":
     logging.basicConfig(
-        level=logging.DEBUG, format="%(asctime)s : %(levelname)s : %(message)s"
+        level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s"
     )
     logging.info("Fetching Subscriber Data ...")
     locs = get_users_locations()
