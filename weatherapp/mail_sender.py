@@ -15,7 +15,7 @@ from signup.models import Subscriber
 
 # ----- UTIL FUNCS
 def get_users_locations():
-     """
+    """
      Restructure django Subscriber objects into a hashmap
 
     :return: A hashmap (location -> list of emails of that location)
