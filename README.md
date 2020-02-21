@@ -1,4 +1,4 @@
-# Weather App (Klaviyo)
+# Weather App
 Welcome to my implementation of the weather powered email assignment by Klaviyo.
 
 ## Requirements
@@ -50,29 +50,30 @@ python mail_sender.py
 
 **NOTE:** It is unnecessary to scrape cities, load fixtures and make migrations everytime. I provided these instructions with the mindset of the project being run for the very first time after the code was written. Even in my submission, the sqlite files should be present which should resume from the state I left them in last.
 
+In a real world setting, scraping cities can be run every year in order to update the list and then migrated into the DB.
+
 ## Assumptions
-During this project I made some small assumptions, which I thought I would mention. Due to heavy semester load it was hard for me to implement/check some of these.
-- Email Existence: For the purposes of this assignment I assumed that the emails being enter will exist. Ofcourse, while filling the form, there is a Django regex check to validate format, but currently there is no check for whether the email is actually a real one or not.
-- weatherbit.io returns weather correctly
-- The requests to weatherbit.io never fail. Ideally, there should be a check for this but due to the free subscription there is a cap on the number of calls I can make (so I cannot poll till I succeed) and the assignment asks us to set the content of the body of the email with the weather and description of the location, which is a hard field to have a default value and wouldn't suit the app.
-wise)
+During this project I made some small assumptions, which I thought I would mention. Due to heavy semester load it was hard for me to implement/check some of these. I wanted to mention these to showcase that I am aware of them and would have implemented in a real world setting.
+- **Email Existence:** For the purposes of this assignment I assumed that the emails being enter will exist. Ofcourse, while filling the form, there is a Django regex check to validate format, but currently there is no check for whether the email is actually a real one or not.
+- **Weatherbit.io correctness:** It has been assumed that weatherbit returns accurate weather. I have tested it and verified for a few locations but still wanted to mention this as an assumption.
+- **Weatherbit always returns:** The requests to weatherbit.io never fail. Ideally, there should be a check for this but due to the free subscription there is a cap on the number of calls I can make (so I cannot poll till I succeed) and the assignment asks us to set the content of the body of the email with the weather and description of the location, which is a hard field to have a default value and wouldn't suit the app.
+wise). However there is a check before querying to see if there is an active internet connection or not.
 
 
 ## Scalability
-- Caching weather API calls (O(100))
-- No recomputation of what kind to email to send, going by locations and storing the email
+Our app may have a million users but the configuration of the app allows only top 100 most populated cities in the US. Hence it is grossly inefficient to query the weather for every user. Therefore, I query only locations that have users corresponding to them in the database, hence worst case I will make only 100 calls to the weatherbit API. In my implementation, due to caching the locations, I also compute what email to send per location also once thereby having some minor computation savings there.
 
 ## Security
-- SMTP SSL reason
-- no cookies(no pass)
-- csrf token Django
+- **Django queries:** The only segment where there is interaction with data is when a user submits a form with his/her email and location. By default, Django querysets are protected against SQL injection since the queries are constructed using query parameterization. Source: https://docs.djangoproject.com/en/3.0/topics/security/
+- **Sending emails:** In my project I use an SSL connection to login to my email and send mails and by virtue of SSL, all data sent within that session is private and encrypted.
 
 ## Design Choices
-- Linking Models with Foreign Key. FIRSTLY VERY RARE THAT population list will change, only ones at bottom, secondly want to keep customers that we already have with their weather. ON delete Protect because want customer to stay UNLESS unsubscribe (because population change). Even in the worst case 350 cities. Send email that location has been removed (don’t think that is good from a customer perspective)
 
-- Weather API code(sunny 800 etc) design choices: because want to cover wide range
+- **Usability:** To define my models, I created a subscriber and a location model, with subscriber having a foreign key to location. Now, since we use only top 100 most populated cities, it is very rare or unusual for the list to **drastically** change. Only the bottom few are vulnerable to change, hence it is very unlikely in the first place that a location will be deleted. In case it does, I have used ```on_delete=models.PROTECT```, which basically means, if any subscriber points to a location about to be deleted, don't delete it. The thinking behind this was that if we have a user with a location that is about to be deleted, we should keep that location since we are all about personalizing for customers. Without the location we wouldn't be able to send them personalized emails which I felt was incorrect. The tradeoff is that in the absolute worst case(very very unlikely to happen) we have all the cities of US in our database and I thought that if we decide to actually delete the location, we must have a mechanism to either: set the user's weather to the closest city to the one being deleted and ballpark the email OR send out an email notifying the user that the city has been deleted.
 
-- Environment variables(Repeated)
+- **Weather API design choices:** There were a couple of ways to decide the subject of the email based on the weather and I chose a safer option, i.e.: using weather codes. WeatherBit has certain codes for the kind of weather. To check if it is sunny we have ```code==800```, to check for precipitation we have two things: ```300 <= code <= 623``` which is a range of some form of precipitation OR ```code==900``` which is code for unknown precipitation. Apart from this, Ofcourse temperature was also used in the constraints. I used this way because we want to cover wide range of precipitation and it is a nice plug and play way to determine the general weather of the day.
+
+- **Within script security:** To adapt to best practices, I used environment variables to shield sensitive information such as: Email ID, Email Password and API keys.
 
 ## Sources
-- Abbreviations of states http://worldpopulationreview.com/states/state-abbreviations/
+- [Abbreviations of states](http://worldpopulationreview.com/states/state-abbreviations/)
